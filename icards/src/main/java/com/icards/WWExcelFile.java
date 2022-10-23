@@ -63,14 +63,15 @@ public class WWExcelFile {
         HSSFSheet sheet_source = workbook_source.getSheet("Лист1");
         HSSFSheet sheet_destination = workbook_destination.getSheet("Лист1");
         
-        Iterator rowIterator = sheet_source.rowIterator();        
+        Iterator rowIterator = sheet_source.rowIterator();
         while (rowIterator.hasNext()){
             HSSFRow row_source = (HSSFRow) rowIterator.next();                             
             writeCellValue(sheet_destination,  getCellValue(row_source, 0),  row_source.getRowNum() + 6, 2);
             writeCellValue(sheet_destination,  getCellValue(row_source, 1),  row_source.getRowNum() + 6, 6);           
         }
                 
-        writeWorkbook(workbook_destination, filename_destination);
+        String otherfilename_destination = "C:\\Users\\MVLomonosov\\IdeaProjects\\ICards\\";
+        writeWorkbook(workbook_destination, otherfilename_destination);
         
         try {
             workbook_source.close();
