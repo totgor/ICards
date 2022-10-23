@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
@@ -20,8 +19,8 @@ public class WWExcelFile {
             POIFSFileSystem fileSystem = new POIFSFileSystem(new FileInputStream(filename));
             HSSFWorkbook workbook = new HSSFWorkbook(fileSystem);
             return workbook;
-        } catch (Exception e) {
-            System.out.println("Error opening an Excel file.");
+        } catch (IOException e) {
+            System.out.println("Error opening an excel file.");
             return null;
         }
     }
@@ -32,38 +31,52 @@ public class WWExcelFile {
             FileOutputStream fileOutputStream = new FileOutputStream(filename);
             workbook.write(fileOutputStream);
         } catch (Exception e) {
-            System.out.println("Error saving changes to Excel file.");
+            System.out.println("Error saving changes to excel file.");
         }
     }
 
-    WWExcelFile(String filename) {
+    // Write string in cell.
+    public void writeCellValue(HSSFSheet sheet, String str, int row, int cell) {
+         sheet.getRow(row).getCell(cell).setCellValue(str);            
+    }
 
-        HSSFWorkbook workbook = readWorkbook(filename);
-        if (workbook == null) {
-            System.out.println("Excel file does not exist."); 
+    // Get cell value.
+    public String getCellValue(HSSFRow row, int cell) {              
+        return row.getCell(cell).toString();        
+    }
+
+    // Constructor.
+    WWExcelFile(String filename_source, String filename_destination) {
+
+        HSSFWorkbook workbook_source = readWorkbook(filename_source);
+        if (workbook_source == null) {
+            System.out.println("Source excel file does not exist."); 
             return;
         }
 
-        HSSFSheet sheet1 = workbook.getSheet("Лист1");
-        HSSFSheet sheet2 = workbook.getSheet("Лист2");
+        HSSFWorkbook workbook_destination = readWorkbook(filename_destination);
+        if (workbook_destination == null) {
+            System.out.println("Destination excel file does not exist."); 
+            return;
+        }
+
+        HSSFSheet sheet_source = workbook_source.getSheet("Лист1");
+        HSSFSheet sheet_destination = workbook_destination.getSheet("Лист1");
         
-        Iterator rowIterator = sheet1.rowIterator();
-        
+        Iterator rowIterator = sheet_source.rowIterator();        
         while (rowIterator.hasNext()){
-            HSSFRow row1 = (HSSFRow) rowIterator.next();
-            HSSFCell cell1 = row1.getCell(0);            
-            
-            HSSFRow row2 =  sheet2.createRow(row1.getRowNum());            
-            HSSFCell cell2 = row2.createCell(0);
-            cell2.setCellValue(cell1.toString());
+            HSSFRow row_source = (HSSFRow) rowIterator.next();                             
+            writeCellValue(sheet_destination,  getCellValue(row_source, 0),  row_source.getRowNum() + 6, 2);
+            writeCellValue(sheet_destination,  getCellValue(row_source, 1),  row_source.getRowNum() + 6, 6);           
         }
                 
-        writeWorkbook(workbook, filename);        
-
+        writeWorkbook(workbook_destination, filename_destination);
+        
         try {
-            workbook.close();    
+            workbook_source.close();
+            workbook_destination.close();
         } catch (IOException e) {
-            System.out.println("Ошибка закрытия Excel файла.");
+            System.out.println("Close error in excel files");
         }
     }   
 }
