@@ -12,7 +12,9 @@ import org.apache.poi.poifs.filesystem.POIFSFileSystem;
 
 // Work with Excel file.
 public class WWExcelFile {
-   
+    
+    Employees allEmploeeys = new Employees();
+
     // Open Excel file for read.
      public HSSFWorkbook readWorkbook(String filename) {
         try {
@@ -39,6 +41,11 @@ public class WWExcelFile {
     public void writeCellValue(HSSFSheet sheet, String str, int row, int cell) {
          sheet.getRow(row).getCell(cell).setCellValue(str);            
     }
+    
+    // Write int in cell.
+    public void writeCellValue(HSSFSheet sheet, int index, int row, int cell) {
+        sheet.getRow(row).getCell(cell).setCellValue(index);
+   }
 
     // Get cell value.
     public String getCellValue(HSSFRow row, int cell) {              
@@ -63,16 +70,46 @@ public class WWExcelFile {
         HSSFSheet sheet_source = workbook_source.getSheet("Лист1");
         HSSFSheet sheet_destination = workbook_destination.getSheet("Лист1");
         
+        String fio = null;
+        Employee employee = null;
+
+        // Filling in the Employees.
         Iterator rowIterator = sheet_source.rowIterator();
         while (rowIterator.hasNext()){
-            HSSFRow row_source = (HSSFRow) rowIterator.next();                             
-            writeCellValue(sheet_destination,  getCellValue(row_source, 0),  row_source.getRowNum() + 6, 2);
-            writeCellValue(sheet_destination,  getCellValue(row_source, 1),  row_source.getRowNum() + 6, 6);           
+            HSSFRow row_source = (HSSFRow) rowIterator.next();            
+
+            if (fio != getCellValue(row_source, 0)) {
+                fio = getCellValue(row_source, 0);
+                employee = new Employee(fio);
+                allEmploeeys.employees.add(employee);
+            }
+            if (fio == getCellValue(row_source, 0)) employee.addEquipment(getCellValue(row_source, 1), getCellValue(row_source, 2));                                                       
         }
-                
-        String otherfilename_destination = "C:\\Users\\MVLomonosov\\IdeaProjects\\ICards\\";
-        writeWorkbook(workbook_destination, otherfilename_destination);
+
+        // Filling in the excel from Employees.
+        for (Employee ptremployee : allEmploeeys.employees) {                     
+            writeCellValue(sheet_destination,  ptremployee.getFio(),  17, 2);
+            
+            int index = 1;
+            boolean next_column = false;
+            int row = 6; 
+            int cell = 1;
+            for (Equipment ptrequipment : ptremployee.equipments) {
+                writeCellValue(sheet_destination,  index, row, cell);
+                writeCellValue(sheet_destination,  ptrequipment.getName(), row, cell + 1);
+                writeCellValue(sheet_destination,  ptrequipment.getInventoryNumber(),  row++, cell + 5);
+                if (++index > 10 && next_column == false) {
+                    row = 6;
+                    cell = 12;
+                    next_column = true;
+                }
+            }
+
+            String otherfilename_destination = "C:\\Users\\MVLomonosov\\IdeaProjects\\ICards\\" + ptremployee.getFio() + ".xls";
+            writeWorkbook(workbook_destination, otherfilename_destination);            
+        }        
         
+        // Close excel.
         try {
             workbook_source.close();
             workbook_destination.close();

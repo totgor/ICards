@@ -1,23 +1,21 @@
 package com.icards;
 
+import java.util.ArrayList;
+
 public class Employee {
-    public String fio;
-    public Equipment[] equipments;
-    public Employee next;
-    public Employee previous;
+    private String fio;
+    public ArrayList<Equipment> equipments;
 
-    Employee() {
-        next = null;
-        previous = null;
-        equipments = new Equipment[100];
-        fio = "No name";
+    Employee(String fio) {
+        this.fio = fio;
+        equipments = new ArrayList<Equipment>();
     }
 
-    public void addEmployee() {
-        
+    public void addEquipment(String name, String inventoryNumber) {
+        equipments.add(new Equipment(name, inventoryNumber));
     }
 
-    public void getEmployee() {
-
+    public String getFio() {
+        return fio;
     }
 }
