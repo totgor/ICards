@@ -71,6 +71,7 @@ public class WWExcelFile {
         HSSFSheet sheet_destination = workbook_destination.getSheet("Лист1");
         
         String fio = null;
+
         Employee employee = null;
 
         // Filling in the Employees.
@@ -88,25 +89,25 @@ public class WWExcelFile {
 
         // Filling in the excel from Employees.
         for (Employee ptremployee : allEmploeeys.employees) {                     
-            writeCellValue(sheet_destination,  ptremployee.getFio(),  17, 2);
+            writeCellValue(sheet_destination,  ptremployee.getFio(),  16, 3);
             
             int index = 1;
             boolean next_column = false;
-            int row = 6; 
-            int cell = 1;
+            int row = 5; 
+            int cell = 0;
             for (Equipment ptrequipment : ptremployee.equipments) {
                 writeCellValue(sheet_destination,  index, row, cell);
                 writeCellValue(sheet_destination,  ptrequipment.getName(), row, cell + 1);
                 writeCellValue(sheet_destination,  ptrequipment.getInventoryNumber(),  row++, cell + 5);
                 if (++index > 10 && next_column == false) {
-                    row = 6;
-                    cell = 12;
+                    row = 5;
+                    cell = 10;
                     next_column = true;
                 }
             }
 
-            String otherfilename_destination = "C:\\Users\\MVLomonosov\\IdeaProjects\\ICards\\" + ptremployee.getFio() + ".xls";
-            writeWorkbook(workbook_destination, otherfilename_destination);            
+            String create_filename_destination = ptremployee.getFio() + ".xls";
+            writeWorkbook(workbook_destination, create_filename_destination);            
         }        
         
         // Close excel.
