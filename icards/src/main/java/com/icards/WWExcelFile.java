@@ -3,16 +3,22 @@ package com.icards;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.poifs.filesystem.POIFSFileSystem;
+import org.apache.poi.ss.usermodel.CellType;
 
 // Work with Excel file.
 public class WWExcelFile {
     
+    Date dateNow = new Date();
+    SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
+
     Employees allEmploeeys = new Employees();
 
     // Open Excel file for read.
@@ -40,6 +46,12 @@ public class WWExcelFile {
     // Write string in cell.
     public void writeCellValue(HSSFSheet sheet, String str, int row, int cell) {
          sheet.getRow(row).getCell(cell).setCellValue(str);            
+    }
+
+    //Clear cell.
+    public void clearCell(HSSFSheet sheet, int row, int cell) {
+        sheet.getRow(row).getCell(cell).setBlank();
+        //sheet.getRow(row).getCell(cell).setCellType(CellType.BLANK);
     }
     
     // Write int in cell.
@@ -89,25 +101,50 @@ public class WWExcelFile {
 
         // Filling in the excel from Employees.
         for (Employee ptremployee : allEmploeeys.employees) {                     
+            writeCellValue(sheet_destination, formatForDateNow.format(dateNow), 2, 2);
             writeCellValue(sheet_destination,  ptremployee.getFio(),  16, 3);
             
-            int index = 1;
+            int index = 0;
+            int indexFile = 1;
             boolean next_column = false;
             int row = 5; 
             int cell = 0;
             for (Equipment ptrequipment : ptremployee.equipments) {
+                index++;
                 writeCellValue(sheet_destination,  index, row, cell);
-                writeCellValue(sheet_destination,  ptrequipment.getName(), row, cell + 1);
+                writeCellValue(sheet_destination,  ptrequipment.getName().length() > 60?ptrequipment.getName().substring(0, 60):ptrequipment.getName(), row, cell + 1);
                 writeCellValue(sheet_destination,  ptrequipment.getInventoryNumber(),  row++, cell + 5);
-                if (++index > 10 && next_column == false) {
+                if (index >= 10 && next_column == false) {
                     row = 5;
                     cell = 10;
-                    next_column = true;
+                    next_column = true;                                     
+                }
+                if ((index % 20) == 0) {                    
+                    String create_filename_destination = ptremployee.getFio() + " " + indexFile++ + ".xls";
+                    writeWorkbook(workbook_destination, create_filename_destination);
+
+                    index = 1;
+                    indexFile = 1;
+                    next_column = false;
+                    row = 5;
+                    cell = 0;
+                    //почистить sheet
+                    for (int i = 0; i < 10; i++) {
+                        clearCell(sheet_destination, i + 5, 0);
+                        clearCell(sheet_destination, i + 5, 10);
+                    }
                 }
             }
 
-            String create_filename_destination = ptremployee.getFio() + ".xls";
-            writeWorkbook(workbook_destination, create_filename_destination);            
+            if ((ptremployee.equipments.size() % 20) != 0) {
+                String create_filename_destination = ptremployee.getFio() + ".xls";
+                writeWorkbook(workbook_destination, create_filename_destination);
+                //почистить sheet
+                for (int i = 0; i < 10; i++) {
+                    clearCell(sheet_destination, i + 5, 0);
+                    clearCell(sheet_destination, i + 5, 10);                    
+                }
+            }
         }        
         
         // Close excel.
