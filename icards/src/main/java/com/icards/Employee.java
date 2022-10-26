@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 public class Employee {
     private String fio;
-    public ArrayList<Equipment> equipments;
+    public ArrayList<Equipment> equipmentsList;
 
     Employee(String fio) {
         this.fio = fio;
-        equipments = new ArrayList<Equipment>();
+        equipmentsList = new ArrayList<Equipment>();
     }
 
     public void addEquipment(String name, String inventoryNumber) {
-        equipments.add(new Equipment(name, inventoryNumber));
+        equipmentsList.add(new Equipment(name, inventoryNumber));
     }
 
     public String getFio() {
