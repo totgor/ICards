@@ -4,10 +4,12 @@ import java.util.ArrayList;
 
 public class Employee {
     private String fio;
+    private String department;
     public ArrayList<Equipment> equipmentsList;
 
-    Employee(String fio) {
+    Employee(String fio, String department) {
         this.fio = fio;
+        this.department department;
         equipmentsList = new ArrayList<Equipment>();
     }
 
@@ -17,5 +19,9 @@ public class Employee {
 
     public String getFio() {
         return fio;
+    }
+
+    public String getDepartment() {
+        return department;
     }
 }
