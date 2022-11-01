@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -78,24 +78,25 @@ public class WWExcelFile {
     // Filling  ArrayList Employees.
     private void fillingEmployees(XSSFSheet sheet, Employees employees) {
         String fio = null;
-        String department = "Hello";
+        String department = null;
         Employee employee = null;
-        final int fio_cell = 6;        
+        final int fio_cell = 6;
+        final int first_cell = 0;
 
          Iterator rowIterator = sheet.rowIterator();
          while (rowIterator.hasNext()){
             XSSFRow row_source = (XSSFRow) rowIterator.next();
             
-            short color = row_source.getCell(0).getCellStyle().getFillForegroundColor();
-            System.out.println(color);
-
- 
-             if (fio != getCellValue(row_source, fio_cell)) {
-                 fio = getCellValue(row_source,fio_cell);
-                 employee = new Employee(fio, department);
-                 employees.employeesList.add(employee);
-             }
-             if (fio == getCellValue(row_source, 0)) employee.addEquipment(getCellValue(row_source, 1), getCellValue(row_source, 2));                                                       
+            if (row_source.getCell(first_cell).getCellType() == CellType.STRING) department = getCellValue(row_source, first_cell); // определяем департамент
+            
+            // В ТМЦ ФИО идут не отсортировано. - Как отсортировать?
+            // Не всё относится к IT отделу. - Как убрать то, что не относится к IT отделу?
+            if (fio != getCellValue(row_source, fio_cell)) {
+                fio = getCellValue(row_source,fio_cell);
+                employee = new Employee(fio, department);
+                employees.employeesList.add(employee);
+            }
+            if (fio == getCellValue(row_source, 0)) employee.addEquipment(getCellValue(row_source, 1), getCellValue(row_source, 2));                                                       
          }
     }
 

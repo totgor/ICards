@@ -9,7 +9,7 @@ public class Employee {
 
     Employee(String fio, String department) {
         this.fio = fio;
-        this.department department;
+        this.department = department;
         equipmentsList = new ArrayList<Equipment>();
     }
 

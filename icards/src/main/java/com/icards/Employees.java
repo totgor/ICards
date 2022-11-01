@@ -9,7 +9,7 @@ public class Employees {
         employeesList = new ArrayList<Employee>();
     }
 
-    public void addEmployee(String fio) {
-        employeesList.add(new Employee(fio));
+    public void addEmployee(String fio, String department) {
+        employeesList.add(new Employee(fio, department));
     }
 }
