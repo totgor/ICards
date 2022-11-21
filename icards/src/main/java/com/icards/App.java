@@ -19,7 +19,6 @@ public class App
 
         // new WWExcelFile(filename_source, filename_destination);
 
-        DataBase db = new DataBase();
-        db.query();
+        DataBase db = new DataBase();        
     }
 }
