@@ -91,6 +91,7 @@ public class WWExcelFile {
             
             // В ТМЦ ФИО идут не отсортировано. - Как отсортировать?
             // Не всё относится к IT отделу. - Как убрать то, что не относится к IT отделу?
+            // Нужна БД и SQL - иначе это будет тормознуто работать!
             if (fio != getCellValue(row_source, fio_cell)) {
                 fio = getCellValue(row_source,fio_cell);
                 employee = new Employee(fio, department);

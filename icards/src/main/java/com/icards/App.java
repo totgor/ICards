@@ -14,9 +14,12 @@ public class App
         // String filename_destination = args[1];
         
         // For the test without compiling.
-        String filename_source = "excel_data2.xlsx";
-        String filename_destination = "excel_template.xlsx";
+        // String filename_source = "excel_data2.xlsx";        
+        // String filename_destination = "excel_template.xlsx";
 
-        new WWExcelFile(filename_source, filename_destination);
+        // new WWExcelFile(filename_source, filename_destination);
+
+        DataBase db = new DataBase();
+        db.query();
     }
 }
