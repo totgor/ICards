@@ -8,7 +8,7 @@ public class DataBase {
     static final String USER = "root";
     static final String PASS = "1q2w3e$R";
 
-    static final String QUERY = "SELECT * FROM equipments";
+    static final String QUERY = "SELECT * FROM icardsdb.equipments";
 
     //Open a connetction        
     DataBase() {
@@ -19,9 +19,11 @@ public class DataBase {
             //Extract data from result set
             while(resultSet.next()) {
                 System.out.print("id: " + resultSet.getString("id"));
-                System.out.print(", inventory_name: " + resultSet.getString("inventory_namber"));
-                System.out.print(", name: " + resultSet.getString("name"));
-                System.out.println(", fio: " + resultSet.getString("fio_id"));
+                System.out.print(", department: " + resultSet.getString("department"));
+                System.out.print(", fio: " + resultSet.getString("fio"));
+                System.out.print(", inventory_name: " + resultSet.getString("inventory_number"));
+                System.out.println(", name: " + resultSet.getString("name"));
+                
             }
         } catch (SQLException e) {
             e.printStackTrace();
