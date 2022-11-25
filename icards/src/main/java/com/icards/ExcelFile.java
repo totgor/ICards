@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
+import javax.xml.crypto.Data;
+
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
@@ -76,22 +78,36 @@ public class ExcelFile {
 
     // Filling  ArrayList Employees.
     private void fillingDB(XSSFSheet sheet) {
-        String fio = null;
+        DataBase db = new DataBase();
+
+        int count = 0;        
         String department = null;
-        final int fio_cell = 6;
+        String inventory_number = null;
+        String name = null;
+        String fio = null;
+        
         final int department_cell = 0;
+        final int inventory_number_cell = 1;
+        final int name_cell = 4;
+        final int fio_cell = 6;
 
          Iterator rowIterator = sheet.rowIterator();
          while (rowIterator.hasNext()){
             XSSFRow row_source = (XSSFRow) rowIterator.next();
             
             if (row_source.getCell(department_cell).getCellType() == CellType.STRING) department = getCellValue(row_source, department_cell); // определяем департамент
-            
+            else {
+                inventory_number = getCellValue(row_source, inventory_number_cell);
+                name = getCellValue(row_source, name_cell);
+                fio = getCellValue(row_source, fio_cell);
 
-            // getCellValue(row_source, fio_cell);
-
-            
+                //обрабоать запрос на добавление строки в БД
+                db.insertQuery(++count, department, inventory_number, name, fio);
+                System.out.println(count + " " + department + " " + inventory_number + " " + name + " " + fio);
+            }
          }
+
+         //db.insertQuery("Бухгалтерия", "Б11_00011", "ПК", "Иванов Иван Иванович");
     }
 
 
