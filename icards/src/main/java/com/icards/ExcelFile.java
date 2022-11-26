@@ -7,7 +7,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 
-import javax.xml.crypto.Data;
 
 import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -17,10 +16,12 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 // Work with Excel file.
 public class ExcelFile {
     
-    private Date dateNow = new Date();
-   
-    private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
+    XSSFWorkbook workbook_source = null;
+    XSSFWorkbook workbook_destination = null;
 
+    // private Date dateNow = new Date();
+   
+    // private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
 
     // Open Excel file for read.
     private XSSFWorkbook readWorkbook(String filename) {
@@ -44,7 +45,93 @@ public class ExcelFile {
         }
     }
 
-    // // Write string in cell.
+    // Opening excel files.
+    ExcelFile(String filename_source, String filename_destination) {
+
+        workbook_source = readWorkbook(filename_source);
+
+        if (workbook_source == null) {
+            System.out.println("Source excel file does not exist."); 
+            return;
+        }
+
+        workbook_destination = readWorkbook(filename_destination);
+
+        if (workbook_destination == null) {
+            System.out.println("Destination excel file does not exist."); 
+            return;
+        }        
+                
+        // fillingDB(workbook_source.getSheet("Лист1"));
+
+        //extractEmployeesToExcelTable(workbook_destination, workbook_destination.getSheet("Лист1"));
+                
+        // try {
+        //     workbook_source.close();
+        //     workbook_destination.close();
+        // } catch (IOException e) {
+        //     System.out.println("Close error in excel files");
+        // }
+    }   
+
+    // Closing excel files.
+    void closeExcelFile() {
+        try {
+            workbook_source.close();
+            System.out.println("Close source excel file ...OK");   
+        } catch (IOException e) {
+            System.out.println("Close source excel file ...NO");
+        }
+
+        try {
+            workbook_destination.close();
+            System.out.println("Close destination excel file ...OK");   
+        } catch (Exception e) {
+            System.out.println("Close destination excel file ...NO");
+        }
+    }
+
+   // Filling  ArrayList Employees.
+    void fillingDB(DataBase db) {
+        
+        XSSFSheet sheet = workbook_source.getSheet("Лист1");
+
+        int count = 0;        
+        String department = null;
+        String inventory_number = null;
+        String name = null;
+        String fio = null;
+        
+        final int department_cell = 0;
+        final int inventory_number_cell = 1;
+        final int name_cell = 4;
+        final int fio_cell = 6;
+
+        Date start_time = new Date();
+
+         Iterator rowIterator = sheet.rowIterator();
+         while (rowIterator.hasNext()){
+            XSSFRow row_source = (XSSFRow) rowIterator.next();
+            
+            if (row_source.getCell(department_cell).getCellType() == CellType.STRING) department = row_source.getCell(department_cell).toString();// определяем департамент
+            else {
+                inventory_number = row_source.getCell(inventory_number_cell).toString();
+                name = row_source.getCell(name_cell).toString();
+                fio = row_source.getCell(fio_cell).toString();
+
+                //обрабоать запрос на добавление строки в БД
+                db.insertQuery(++count, department, inventory_number, name, fio);
+
+                System.out.print("\r" + count);
+            }
+         }
+
+         Date stop_time = new Date();
+         long time = stop_time.getTime() - start_time.getTime();
+         System.out.println( " Выполненно за " + time/1000.0 + " сек.");
+    }
+
+ // // Write string in cell.
     // private void writeCellValue(XSSFSheet sheet, String str, int row, int cell) {
     //      sheet.getRow(row).getCell(cell).setCellValue(str);            
     // }
@@ -71,44 +158,6 @@ public class ExcelFile {
 //         sheet.getRow(row).getCell(cell).setCellValue(index);
 //    }
 
-    // Get cell value.
-    private String getCellValue(XSSFRow row, int cell) {              
-        return row.getCell(cell).toString();        
-    }
-
-    // Filling  ArrayList Employees.
-    private void fillingDB(XSSFSheet sheet) {
-        DataBase db = new DataBase();
-
-        int count = 0;        
-        String department = null;
-        String inventory_number = null;
-        String name = null;
-        String fio = null;
-        
-        final int department_cell = 0;
-        final int inventory_number_cell = 1;
-        final int name_cell = 4;
-        final int fio_cell = 6;
-
-         Iterator rowIterator = sheet.rowIterator();
-         while (rowIterator.hasNext()){
-            XSSFRow row_source = (XSSFRow) rowIterator.next();
-            
-            if (row_source.getCell(department_cell).getCellType() == CellType.STRING) department = getCellValue(row_source, department_cell); // определяем департамент
-            else {
-                inventory_number = getCellValue(row_source, inventory_number_cell);
-                name = getCellValue(row_source, name_cell);
-                fio = getCellValue(row_source, fio_cell);
-
-                //обрабоать запрос на добавление строки в БД
-                db.insertQuery(++count, department, inventory_number, name, fio);
-                System.out.println(count + " " + department + " " + inventory_number + " " + name + " " + fio);
-            }
-         }
-
-         //db.insertQuery("Бухгалтерия", "Б11_00011", "ПК", "Иванов Иван Иванович");
-    }
 
 
     // private void extractEmployeesToExcelTable(XSSFWorkbook workbook_destination, XSSFSheet sheet) {
@@ -184,32 +233,5 @@ public class ExcelFile {
     // }
 
 
-    // Constructor.
-    ExcelFile(String filename_source, String filename_destination) {
-
-        XSSFWorkbook workbook_source = readWorkbook(filename_source);
-
-        if (workbook_source == null) {
-            System.out.println("Source excel file does not exist."); 
-            return;
-        }
-
-        XSSFWorkbook workbook_destination = readWorkbook(filename_destination);
-
-        if (workbook_destination == null) {
-            System.out.println("Destination excel file does not exist."); 
-            return;
-        }        
-                
-        fillingDB(workbook_source.getSheet("Лист1"));
-
-        //extractEmployeesToExcelTable(workbook_destination, workbook_destination.getSheet("Лист1"));
-                
-        try {
-            workbook_source.close();
-            workbook_destination.close();
-        } catch (IOException e) {
-            System.out.println("Close error in excel files");
-        }
-    }   
+   
 }

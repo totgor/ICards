@@ -17,6 +17,11 @@ public class App
         String filename_source = "excel_data.xlsx";        
         String filename_destination = "excel_template.xlsx";        
         
-        new ExcelFile(filename_source, filename_destination);        
+        DataBase dataBase = new DataBase(); // Opening a database connetction.
+        ExcelFile excelFile = new ExcelFile(filename_source, filename_destination); // Opening excel files.
+        excelFile.fillingDB(dataBase);
+        
+        dataBase.closeConnection();
+        excelFile.closeExcelFile();
     }
 }
