@@ -93,8 +93,9 @@ public class ExcelFile {
 
    // Filling  ArrayList Employees.
     void fillingDB(DataBase db) {
-        
-        XSSFSheet sheet = workbook_source.getSheet("Лист1");
+        //Определить имя листа:
+        //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)
+        XSSFSheet sheet = workbook_source.getSheet("TDSheet");
 
         int count = 0;        
         String department = null;
