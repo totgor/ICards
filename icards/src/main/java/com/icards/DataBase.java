@@ -1,5 +1,11 @@
 package com.icards;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.sql.*;
 
 
@@ -31,24 +37,50 @@ public class DataBase {
 
 
     // Extract data from database.
-    void selectQuery() {
-        String QUERY = "SELECT * FROM equipments";
-
-        try (Connection connection = DriverManager.getConnection(DB_URL, USER, PASS)){
-            Statement statement = connection.createStatement();
-        
+    void selectQuery(String QUERY, ExcelFile excelFile) {        
+        try {
             ResultSet resultSet = statement.executeQuery(QUERY);
             // Extract data from result set.
+            int n = 1;
             while(resultSet.next()) {
-                System.out.print("id: " + resultSet.getString("id"));
-                System.out.print(", department: " + resultSet.getString("department"));                
-                System.out.print(", inventory_name: " + resultSet.getString("inventory_number"));
-                System.out.println(", name: " + resultSet.getString("name"));
-                System.out.print(", fio: " + resultSet.getString("fio"));
-            }            
-        } catch (SQLException e) {            
+
+                //Теперь тут загоняем данные в шаблон
+                excelFile.extractEmployeeToExcelTable(resultSet.getString("department"),
+                                                      resultSet.getString("inventory_number"),
+                                                      resultSet.getString("fio"),
+                                                      resultSet.getString("name"));
+                // System.out.print(n++ + " ");
+                //System.out.print("id: " + resultSet.getString("id"));
+                //System.out.print(" " + resultSet.getString("department"));
+                // System.out.print(" " + resultSet.getString("inventory_number"));
+                //System.out.println(" " + resultSet.getString("name"));
+                // System.out.print(" " + resultSet.getString("fio") + "\n");
+
+
+            }
+        } catch (SQLException e) {
+            System.out.println("Select query error.");
             e.printStackTrace();
         }
+        
+    }
+
+    String readQueryFromFile(String fileName) {
+        String query = "";
+                
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), StandardCharsets.UTF_8))) {
+            String substring;
+            while ((substring = br.readLine()) != null){    
+                query = query + "\n" + substring;
+            }
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found.");
+            return null;
+        } catch (IOException e) {
+            System.out.println("Error read from file.");
+            return null;
+        }
+        return query;
     }
 
     // Opening a database connetction.
@@ -65,12 +97,14 @@ public class DataBase {
 
     // Close a database connection.
     void closeConnection() {
-        try {
-            connection.close();
-            System.out.println("Connection to Database close ...OK");
-        } catch (SQLException e) {
-            System.out.println("Connection to Database close ...NO");
-            e.printStackTrace();
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Connection to Database close ...OK");
+            } catch (SQLException e) {
+                System.out.println("Connection to Database close ...NO");
+                e.printStackTrace();
+            }
         }
     }
 

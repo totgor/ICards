@@ -1,8 +1,8 @@
 
-SELECT fio, name
+SELECT *
 FROM icardsdb.equipments
 WHERE 
-    fio LIKE '%Фомичев%'
+    fio LIKE '%фомичев%евгений%'
 
     OR name LIKE '%системн%блок%' AND name NOT LIKE '%подставка%под%системный%блок%'  
                                AND name NOT LIKE '%подставка%для%системн%блока%' 
@@ -120,4 +120,4 @@ WHERE
 
     OR name LIKE '%флэш%' OR name LIKE '%флеш%'
 
-ORDER BY name;
+ORDER BY fio;

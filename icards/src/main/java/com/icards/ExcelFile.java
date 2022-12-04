@@ -19,9 +19,9 @@ public class ExcelFile {
     XSSFWorkbook workbook_source = null;
     XSSFWorkbook workbook_destination = null;
 
-    // private Date dateNow = new Date();
+    private Date dateNow = new Date();
    
-    // private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
+    private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
 
     // Open Excel file for read.
     private XSSFWorkbook readWorkbook(String filename) {
@@ -62,32 +62,26 @@ public class ExcelFile {
             return;
         }        
                 
-        // fillingDB(workbook_source.getSheet("Лист1"));
-
-        //extractEmployeesToExcelTable(workbook_destination, workbook_destination.getSheet("Лист1"));
-                
-        // try {
-        //     workbook_source.close();
-        //     workbook_destination.close();
-        // } catch (IOException e) {
-        //     System.out.println("Close error in excel files");
-        // }
     }   
 
     // Closing excel files.
     void closeExcelFile() {
-        try {
-            workbook_source.close();
-            System.out.println("Close source excel file ...OK");   
-        } catch (IOException e) {
-            System.out.println("Close source excel file ...NO");
+        if (workbook_source != null){
+            try {
+                workbook_source.close();
+                System.out.println("Close source excel file ...OK");   
+            } catch (IOException e) {
+                System.out.println("Close source excel file ...NO");
+            }
         }
 
-        try {
-            workbook_destination.close();
-            System.out.println("Close destination excel file ...OK");   
-        } catch (Exception e) {
-            System.out.println("Close destination excel file ...NO");
+        if (workbook_destination != null) {
+            try {
+                workbook_destination.close();
+                System.out.println("Close destination excel file ...OK");   
+            } catch (Exception e) {
+                System.out.println("Close destination excel file ...NO");
+            }
         }
     }
 
@@ -132,107 +126,106 @@ public class ExcelFile {
          System.out.println( " Выполненно за " + time/1000.0 + " сек.");
     }
 
- // // Write string in cell.
-    // private void writeCellValue(XSSFSheet sheet, String str, int row, int cell) {
-    //      sheet.getRow(row).getCell(cell).setCellValue(str);            
-    // }
+    // Write string in cell.
+    private void writeCellValue(XSSFSheet sheet, String str, int row, int cell) {
+         sheet.getRow(row).getCell(cell).setCellValue(str);            
+    }
 
-    // // Clear cell.
-    // private void clearCell(XSSFSheet sheet, int row, int cell) {
-    //     sheet.getRow(row).getCell(cell).setCellValue("");
-    // }
+    // Clear cell.
+    private void clearCell(XSSFSheet sheet, int row, int cell) {
+        sheet.getRow(row).getCell(cell).setCellValue("");
+    }
 
-    // // Clear Row Records.
-    // private void clearRowRecords(XSSFSheet sheet) {
-    //     for (int i = 0; i < 10; i++) {
-    //         clearCell(sheet, i + 5, 0);
-    //         clearCell(sheet, i + 5, 1);
-    //         clearCell(sheet, i + 5, 5);
-    //         clearCell(sheet, i + 5, 10);
-    //         clearCell(sheet, i + 5, 11);
-    //         clearCell(sheet, i + 5, 15);
-    //     }
-    // }
+    // Clear Row Records.
+    private void clearRowRecords(XSSFSheet sheet) {
+        for (int i = 0; i < 10; i++) {
+            clearCell(sheet, i + 5, 0);
+            clearCell(sheet, i + 5, 1);
+            clearCell(sheet, i + 5, 5);
+            clearCell(sheet, i + 5, 10);
+            clearCell(sheet, i + 5, 11);
+            clearCell(sheet, i + 5, 15);
+        }
+    }
     
-//     // Write int in cell.
-//     private void writeCellValue(XSSFSheet sheet, int index, int row, int cell) {
-//         sheet.getRow(row).getCell(cell).setCellValue(index);
-//    }
+    // Write int in cell.
+    private void writeCellValue(XSSFSheet sheet, int index, int row, int cell) {
+        sheet.getRow(row).getCell(cell).setCellValue(index);
+   }
 
 
 
-    // private void extractEmployeesToExcelTable(XSSFWorkbook workbook_destination, XSSFSheet sheet) {
-    //     final int date_row = 3;
-    //     final int date_cell = 2;
-    //     final int fio_row = 18;
-    //     final int fio_cell = 3;
-    //     final int startRowData = 5;
+    void extractEmployeeToExcelTable(String department, String inventory_number, String fio, String name) {
+        final int date_row = 3;
+        final int date_cell = 2;
+        final int fio_row = 18;
+        final int fio_cell = 3;
+        final int startRowData = 5;
         
-    //     final int ordianlNumber1_cell = 0;
-    //     final int ordianlNumber2_cell = 8;
-    //     final int name1_cell = 1;        
-    //     final int name2_cell = 9;
-    //     final int inventoryNumber1_cell = 3;
-    //     final int inventoryNumber2_cell = 11;
+        final int ordinalNumber1_cell = 0;
+        final int ordinalNumber2_cell = 8;
+        final int name1_cell = 1;        
+        final int name2_cell = 9;
+        final int inventoryNumber1_cell = 3;
+        final int inventoryNumber2_cell = 11;
+
+        XSSFSheet sheet = workbook_destination.getSheet("Лист1");
 
 
 
-    //     // Filling in the excel from Employees.
-    //     for (Employee ptremployee : allEmploeeys.employeesList) {                     
-    //         writeCellValue(sheet, formatForDateNow.format(dateNow), date_row, date_cell);
-    //         writeCellValue(sheet,  ptremployee.getFio(),  fio_row, fio_cell);
+        // Filling in the excel from Employees.
+        
             
-    //         int index = 0;
-    //         int indexFile = 1;
-    //         boolean next_column = false;
-    //         boolean last_table = false;
-    //         int row = startRowData; 
+        //По идее фамилию и дату надо записать один раз
+        writeCellValue(sheet, formatForDateNow.format(dateNow), date_row, date_cell);
+        writeCellValue(sheet,  fio,  fio_row, fio_cell);
+        
+        // int index = 0;
+        // int indexFile = 1;
+        // boolean next_column = false;
+        // boolean last_table = false;
+        // int row = startRowData; 
+        
+        // index++;
+        
+        // if (index < 10) {
+        //     writeCellValue(sheet,  index, row, ordinalNumber1_cell);
+        //     writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name1_cell);
+        //     writeCellValue(sheet,  inventory_number,  row, inventoryNumber1_cell);
+        // } else if (next_column == false) {
+        //     row = startRowData;
+
+        //     writeCellValue(sheet,  index, row, ordinalNumber2_cell);
+        //     writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name2_cell);
+        //     writeCellValue(sheet,  inventory_number,  row, inventoryNumber2_cell);
+        //     next_column = true;                                     
+        // }
+        // row++;
+
+        // if ((index % 20) == 0) {                                                            
+        //     String create_filename_destination;
             
-    //         for (Equipment ptrequipment : ptremployee.equipmentsList) {
-    //             index++;
-                
-    //             if (index < 10) {
-    //                 writeCellValue(sheet,  index, row, ordianlNumber1_cell);
-    //                 writeCellValue(sheet,  ptrequipment.getName().length() > 60?ptrequipment.getName().substring(0, 60):ptrequipment.getName(), row, name1_cell);
-    //                 writeCellValue(sheet,  ptrequipment.getInventoryNumber(),  row, inventoryNumber1_cell);
-    //             } else if (next_column == false) {
-    //                 row = startRowData;
+        //     if (ptremployee.equipmentsList.size() <= 20) create_filename_destination = fio + ".xlsx";
+        //     else create_filename_destination = fio + " " + indexFile + ".xlsx";
+            
+        //     writeWorkbook(workbook_destination, create_filename_destination);
+            
+        //     indexFile++;
+        //     last_table = true;
+        //     next_column = false;
+        //     index = 0;                    
+        //     clearRowRecords(sheet);
+        // }
+        
+        
+        // if ((ptremployee.equipmentsList.size() % 20) != 0) {
+        //     String create_filename_destination;
 
-    //                 writeCellValue(sheet,  index, row, ordianlNumber2_cell);
-    //                 writeCellValue(sheet,  ptrequipment.getName().length() > 60?ptrequipment.getName().substring(0, 60):ptrequipment.getName(), row, name2_cell);
-    //                 writeCellValue(sheet,  ptrequipment.getInventoryNumber(),  row, inventoryNumber2_cell);
-    //                 next_column = true;                                     
-    //             }
-    //             row++;
+        //     if (last_table == true) create_filename_destination = fio + " " + indexFile + ".xlsx";
+        //     else create_filename_destination = fio + ".xlsx";
 
-    //             if ((index % 20) == 0) {                                                            
-    //                 String create_filename_destination;
-                   
-    //                 if (ptremployee.equipmentsList.size() <= 20) create_filename_destination = ptremployee.getFio() + ".xlsx";
-    //                 else create_filename_destination = ptremployee.getFio() + " " + indexFile + ".xlsx";
-                   
-    //                 writeWorkbook(workbook_destination, create_filename_destination);
-                    
-    //                 indexFile++;
-    //                 last_table = true;
-    //                 next_column = false;
-    //                 index = 0;                    
-    //                 clearRowRecords(sheet);
-    //             }
-    //         }
-           
-    //         if ((ptremployee.equipmentsList.size() % 20) != 0) {
-    //             String create_filename_destination;
-
-    //             if (last_table == true) create_filename_destination = ptremployee.getFio() + " " + indexFile + ".xlsx";
-    //             else create_filename_destination = ptremployee.getFio() + ".xlsx";
-
-    //             writeWorkbook(workbook_destination, create_filename_destination);                
-    //             clearRowRecords(sheet);
-    //         }
-    //     }        
-    // }
-
-
+        //     writeWorkbook(workbook_destination, create_filename_destination);                
+        //     clearRowRecords(sheet);
+        // }
    
 }
