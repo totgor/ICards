@@ -3,46 +3,20 @@ package com.icards;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Iterator;
-
-
-import org.apache.poi.ss.usermodel.CellType;
-import org.apache.poi.xssf.usermodel.XSSFRow;
-import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 // Work with Excel file.
 public class ExcelFile {
     
-    XSSFWorkbook workbook_source = null;
-    XSSFWorkbook workbook_destination = null;
+    private XSSFWorkbook workbook_source = null;
+    private XSSFWorkbook workbook_destination = null;
 
-    private Date dateNow = new Date();
-   
-    private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
-
-    // Open Excel file for read.
-    private XSSFWorkbook readWorkbook(String filename) {
-        try {
-            FileInputStream fileSystem = new FileInputStream(filename);
-            XSSFWorkbook workbook = new XSSFWorkbook(fileSystem);
-            return workbook;
-        } catch (IOException e) {
-            System.out.println("Error opening an excel file.");
-            return null;
-        }
+    XSSFWorkbook getWorkbookSource() {
+        return workbook_source;
     }
 
-    // Save the changes to the new Excel file.
-    private void writeWorkbook(XSSFWorkbook workbook, String filename) {
-        try {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
-            workbook.write(fileOutputStream);
-        } catch (Exception e) {
-            System.out.println("Error saving changes to excel file.");
-        }
+    XSSFWorkbook getWorkbookDestination() {
+        return workbook_source;
     }
 
     // Opening excel files.
@@ -63,6 +37,27 @@ public class ExcelFile {
         }        
                 
     }   
+    // Open Excel file for read.
+    private XSSFWorkbook readWorkbook(String filename) {
+        try {
+            FileInputStream fileSystem = new FileInputStream(filename);
+            XSSFWorkbook workbook = new XSSFWorkbook(fileSystem);
+            return workbook;
+        } catch (IOException e) {
+            System.out.println("Error opening an excel file.");
+            return null;
+        }
+    }
+
+    // Save the changes to the new Excel file.
+    void writeWorkbook(XSSFWorkbook workbook, String filename) {
+        try {
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            workbook.write(fileOutputStream);
+        } catch (Exception e) {
+            System.out.println("Error saving changes to excel file.");
+        }
+    }
 
     // Closing excel files.
     void closeExcelFile() {
@@ -85,147 +80,4 @@ public class ExcelFile {
         }
     }
 
-   // Filling  ArrayList Employees.
-    void fillingDB(DataBase db) {
-        //Определить имя листа:
-        //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)
-        XSSFSheet sheet = workbook_source.getSheet("TDSheet");
-
-        int count = 0;        
-        String department = null;
-        String inventory_number = null;
-        String name = null;
-        String fio = null;
-        
-        final int department_cell = 0;
-        final int inventory_number_cell = 1;
-        final int name_cell = 4;
-        final int fio_cell = 6;
-
-        Date start_time = new Date();
-
-         Iterator rowIterator = sheet.rowIterator();
-         while (rowIterator.hasNext()){
-            XSSFRow row_source = (XSSFRow) rowIterator.next();
-            
-            if (row_source.getCell(department_cell).getCellType() == CellType.STRING) department = row_source.getCell(department_cell).toString();// определяем департамент
-            else {
-                inventory_number = row_source.getCell(inventory_number_cell).toString();
-                name = row_source.getCell(name_cell).toString();
-                fio = row_source.getCell(fio_cell).toString();
-
-                //обрабоать запрос на добавление строки в БД
-                db.insertQuery(++count, department, inventory_number, name, fio);
-
-                System.out.print("\r" + count);
-            }
-         }
-
-         Date stop_time = new Date();
-         long time = stop_time.getTime() - start_time.getTime();
-         System.out.println( " Выполненно за " + time/1000.0 + " сек.");
-    }
-
-    // Write string in cell.
-    private void writeCellValue(XSSFSheet sheet, String str, int row, int cell) {
-         sheet.getRow(row).getCell(cell).setCellValue(str);            
-    }
-
-    // Clear cell.
-    private void clearCell(XSSFSheet sheet, int row, int cell) {
-        sheet.getRow(row).getCell(cell).setCellValue("");
-    }
-
-    // Clear Row Records.
-    private void clearRowRecords(XSSFSheet sheet) {
-        for (int i = 0; i < 10; i++) {
-            clearCell(sheet, i + 5, 0);
-            clearCell(sheet, i + 5, 1);
-            clearCell(sheet, i + 5, 5);
-            clearCell(sheet, i + 5, 10);
-            clearCell(sheet, i + 5, 11);
-            clearCell(sheet, i + 5, 15);
-        }
-    }
-    
-    // Write int in cell.
-    private void writeCellValue(XSSFSheet sheet, int index, int row, int cell) {
-        sheet.getRow(row).getCell(cell).setCellValue(index);
-   }
-
-
-
-    void extractEmployeeToExcelTable(String department, String inventory_number, String fio, String name) {
-        final int date_row = 3;
-        final int date_cell = 2;
-        final int fio_row = 18;
-        final int fio_cell = 3;
-        final int startRowData = 5;
-        
-        final int ordinalNumber1_cell = 0;
-        final int ordinalNumber2_cell = 8;
-        final int name1_cell = 1;        
-        final int name2_cell = 9;
-        final int inventoryNumber1_cell = 3;
-        final int inventoryNumber2_cell = 11;
-
-        XSSFSheet sheet = workbook_destination.getSheet("Лист1");
-
-
-
-        // Filling in the excel from Employees.
-        
-            
-        //По идее фамилию и дату надо записать один раз
-        writeCellValue(sheet, formatForDateNow.format(dateNow), date_row, date_cell);
-        writeCellValue(sheet,  fio,  fio_row, fio_cell);
-        
-        // int index = 0;
-        // int indexFile = 1;
-        // boolean next_column = false;
-        // boolean last_table = false;
-        // int row = startRowData; 
-        
-        // index++;
-        
-        // if (index < 10) {
-        //     writeCellValue(sheet,  index, row, ordinalNumber1_cell);
-        //     writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name1_cell);
-        //     writeCellValue(sheet,  inventory_number,  row, inventoryNumber1_cell);
-        // } else if (next_column == false) {
-        //     row = startRowData;
-
-        //     writeCellValue(sheet,  index, row, ordinalNumber2_cell);
-        //     writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name2_cell);
-        //     writeCellValue(sheet,  inventory_number,  row, inventoryNumber2_cell);
-        //     next_column = true;                                     
-        // }
-        // row++;
-
-        // if ((index % 20) == 0) {                                                            
-        //     String create_filename_destination;
-            
-        //     if (ptremployee.equipmentsList.size() <= 20) create_filename_destination = fio + ".xlsx";
-        //     else create_filename_destination = fio + " " + indexFile + ".xlsx";
-            
-        //     writeWorkbook(workbook_destination, create_filename_destination);
-            
-        //     indexFile++;
-        //     last_table = true;
-        //     next_column = false;
-        //     index = 0;                    
-        //     clearRowRecords(sheet);
-        // }
-        
-        
-        // if ((ptremployee.equipmentsList.size() % 20) != 0) {
-        //     String create_filename_destination;
-
-        //     if (last_table == true) create_filename_destination = fio + " " + indexFile + ".xlsx";
-        //     else create_filename_destination = fio + ".xlsx";
-
-        //     writeWorkbook(workbook_destination, create_filename_destination);                
-        //     clearRowRecords(sheet);
-        // }
-   
 }

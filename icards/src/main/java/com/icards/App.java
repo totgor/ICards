@@ -1,6 +1,5 @@
 package com.icards;
 
-
 public class App 
 {  
     public static void main( String[] args )
@@ -18,11 +17,10 @@ public class App
         String filename_destination = "excel_template.xlsx";        
         
         DataBase dataBase = new DataBase(); // Opening a database connetction.
-        ExcelFile excelFile = new ExcelFile(filename_source, filename_destination); // Opening excel files.        
-        //excelFile.fillingDB(dataBase);
+        ExcelFile excelFile = new ExcelFile(filename_source, filename_destination); // Opening excel files.
+        //FillingDB fillingDB = new FillingDB(dataBase, excelFile); // Filling Database from excel file.
+        FillingExcel fillingExcel = new FillingExcel(dataBase, excelFile);
 
-        String QUERY = dataBase.readQueryFromFile("src\\sql\\Equipments that belong is IT department.sql");        
-        dataBase.selectQuery(QUERY, excelFile);
         
         dataBase.closeConnection();
         excelFile.closeExcelFile();

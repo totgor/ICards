@@ -15,9 +15,53 @@ public class DataBase {
     // Connection options.
     private Connection connection = null;
     private Statement statement = null;
-    static final String DB_URL = "jdbc:mysql://localhost:3306/icardsdb";
-    static final String USER = "root";
-    static final String PASS = "1q2w3e$R";    
+
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/icardsdb";
+    private static final String USER = "root";
+    private static final String PASS = "1q2w3e$R";    
+    
+    // Opening a database connetction.
+    DataBase() {
+        try {
+            connection = DriverManager.getConnection(DB_URL, USER, PASS);
+            statement = connection.createStatement();
+            System.out.println("Connection to Database ...OK");
+        } catch (SQLException e) {
+            System.out.println("Connection to Database ...NO");
+            e.printStackTrace();
+        }
+    }
+
+    Statement getStatement() {
+        return statement;
+    }
+
+    // Close a database connection.
+    void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                System.out.println("Connection to Database close ...OK");
+            } catch (SQLException e) {
+                System.out.println("Connection to Database close ...NO");
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // Get count records for fio.
+    int getCountRecordsForFio(String fio) {
+        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio = \'" + fio + "\';";
+        System.out.println(QUERY);
+        int result = 0;
+        try {            
+            ResultSet resultSet = statement.executeQuery(QUERY);
+            result = resultSet.getInt(1);
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+        return result;
+    }
 
     // Insert data into the database.
     void insertQuery(int id, String department, String inventory_number, String name, String fio) {
@@ -33,38 +77,9 @@ public class DataBase {
                 e.printStackTrace();
             }            
         }
-    }
-
-
-    // Extract data from database.
-    void selectQuery(String QUERY, ExcelFile excelFile) {        
-        try {
-            ResultSet resultSet = statement.executeQuery(QUERY);
-            // Extract data from result set.
-            int n = 1;
-            while(resultSet.next()) {
-
-                //Теперь тут загоняем данные в шаблон
-                excelFile.extractEmployeeToExcelTable(resultSet.getString("department"),
-                                                      resultSet.getString("inventory_number"),
-                                                      resultSet.getString("fio"),
-                                                      resultSet.getString("name"));
-                // System.out.print(n++ + " ");
-                //System.out.print("id: " + resultSet.getString("id"));
-                //System.out.print(" " + resultSet.getString("department"));
-                // System.out.print(" " + resultSet.getString("inventory_number"));
-                //System.out.println(" " + resultSet.getString("name"));
-                // System.out.print(" " + resultSet.getString("fio") + "\n");
-
-
-            }
-        } catch (SQLException e) {
-            System.out.println("Select query error.");
-            e.printStackTrace();
-        }
-        
-    }
-
+    }    
+    
+    // Read query from file.
     String readQueryFromFile(String fileName) {
         String query = "";
                 
@@ -81,31 +96,6 @@ public class DataBase {
             return null;
         }
         return query;
-    }
-
-    // Opening a database connetction.
-    DataBase() {
-        try {
-            connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            statement = connection.createStatement();
-            System.out.println("Connection to Database ...OK");
-        } catch (SQLException e) {
-            System.out.println("Connection to Database ...NO");
-            e.printStackTrace();
-        }
-    }
-
-    // Close a database connection.
-    void closeConnection() {
-        if (connection != null) {
-            try {
-                connection.close();
-                System.out.println("Connection to Database close ...OK");
-            } catch (SQLException e) {
-                System.out.println("Connection to Database close ...NO");
-                e.printStackTrace();
-            }
-        }
     }
 
 
