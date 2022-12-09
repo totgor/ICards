@@ -51,12 +51,13 @@ public class DataBase {
 
     // Get count records for fio.
     int getCountRecordsForFio(String fio) {
-        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio = \'" + fio + "\';";
+        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio=" + fio + ";";
         System.out.println(QUERY);
         int result = 0;
         try {            
             ResultSet resultSet = statement.executeQuery(QUERY);
-            result = resultSet.getInt(1);
+            resultSet.next();
+            result = resultSet.getInt(1);            
         } catch (Exception e) {
             // TODO: handle exception
         }
