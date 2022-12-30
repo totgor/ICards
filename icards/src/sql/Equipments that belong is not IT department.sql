@@ -177,7 +177,8 @@ WHERE
 
 
     -- Для того что бы убрать все то что проанализировнно из таблицы
-    fio NOT LIKE '%Фомичев%'
+    fio NOT LIKE '%фомичев%евгений%'
+
     AND name NOT LIKE '%системн%блок%' AND name NOT LIKE '%подставка%под%системный%блок%' AND name NOT LIKE '%подставка%для%системн%блока%' 
 	AND name NOT LIKE '%ПК%' AND name NOT LIKE '%подставка%под%ПК%' AND name NOT LIKE '%блок%питания%' AND name NOT LIKE '%ППК%' AND name NOT LIKE '%ПКД%' AND name NOT LIKE '%скрепки%' AND name NOT LIKE '%сигнализац%'
     AND name NOT LIKE '%ноутбук%'

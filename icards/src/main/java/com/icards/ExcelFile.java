@@ -16,7 +16,7 @@ public class ExcelFile {
     }
 
     XSSFWorkbook getWorkbookDestination() {
-        return workbook_source;
+        return workbook_destination;
     }
 
     // Opening excel files.

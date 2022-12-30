@@ -24,7 +24,7 @@ public class DataBase {
     DataBase() {
         try {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            statement = connection.createStatement();
+            // statement = connection.createStatement();            
             System.out.println("Connection to Database ...OK");
         } catch (SQLException e) {
             System.out.println("Connection to Database ...NO");
@@ -51,8 +51,8 @@ public class DataBase {
 
     // Get count records for fio.
     int getCountRecordsForFio(String fio) {
-        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio=" + fio + ";";
-        System.out.println(QUERY);
+        statement = connection.createStatement();
+        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio='" + fio + "';";
         int result = 0;
         try {            
             ResultSet resultSet = statement.executeQuery(QUERY);

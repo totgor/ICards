@@ -1,5 +1,5 @@
 
-SELECT *
+SELECT department, inventory_number, name, fio
 FROM icardsdb.equipments
 WHERE 
     fio LIKE '%фомичев%евгений%'
