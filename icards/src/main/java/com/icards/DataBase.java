@@ -14,26 +14,34 @@ public class DataBase {
     
     // Connection options.
     private Connection connection = null;
-    private Statement statement = null;
+    private Statement statement1 = null;
+    private Statement statement2 = null;
 
     private static final String DB_URL = "jdbc:mysql://localhost:3306/icardsdb";
     private static final String USER = "root";
-    private static final String PASS = "1q2w3e$R";    
+    private static final String PASS = "1q2w3e$R";
+    
+    private String pathQuery = "src\\sql\\Count equipments that belong employments.sql";
     
     // Opening a database connetction.
     DataBase() {
         try {
             connection = DriverManager.getConnection(DB_URL, USER, PASS);
-            // statement = connection.createStatement();            
+            statement1 = connection.createStatement();
+            statement2 = connection.createStatement();       
             System.out.println("Connection to Database ...OK");
         } catch (SQLException e) {
             System.out.println("Connection to Database ...NO");
             e.printStackTrace();
         }
+    }    
+
+    Statement getStatement1() {
+        return statement1;
     }
 
-    Statement getStatement() {
-        return statement;
+    Statement getStatement2() {
+        return statement2;
     }
 
     // Close a database connection.
@@ -50,12 +58,11 @@ public class DataBase {
     }
 
     // Get count records for fio.
-    int getCountRecordsForFio(String fio) {
-        statement = connection.createStatement();
-        String QUERY = "SELECT count(*) FROM icardsdb.equipments WHERE fio='" + fio + "';";
+    int getCountRecordsForFio(String fio) {        
+        String QUERY = readQueryFromFile(pathQuery) + fio + "';";        
         int result = 0;
         try {            
-            ResultSet resultSet = statement.executeQuery(QUERY);
+            ResultSet resultSet = statement2.executeQuery(QUERY);
             resultSet.next();
             result = resultSet.getInt(1);            
         } catch (Exception e) {
@@ -69,10 +76,9 @@ public class DataBase {
         String QUERY = "INSERT INTO equipments(id, department, inventory_number, name, fio) " +
                        "VALUES ('" + id + "', '" + department + "', '" + inventory_number + "', '" + name + "', '" + fio + "')";        
 
-        if (connection != null & statement != null) {
-            // Цикл должен быть тут, чтобы не открывать постоянно соединение с БД.
+        if (connection != null & statement1 != null) {            
             try {
-                statement.executeUpdate(QUERY);               
+                statement1.executeUpdate(QUERY);               
             } catch (SQLException e) {
                 System.out.println("Ошибка запроса INSERT.");
                 e.printStackTrace();

@@ -28,7 +28,7 @@ public class FillingExcel {
     private int index;
     private int indexFile;
     //private boolean next_column;
-    private int countRecordsForFio;
+    private int countRecordsForFio = 0;
     private boolean last_table;
     private int row; 
     private String currentFioEmplyee;
@@ -52,7 +52,7 @@ public class FillingExcel {
         int break_index = 0;
 
         try {
-            ResultSet resultSet = dataBase.getStatement().executeQuery(QUERY);
+            ResultSet resultSet = dataBase.getStatement1().executeQuery(QUERY);
 
             // Extract data from result set.            
             while(resultSet.next()) {
@@ -100,12 +100,13 @@ public class FillingExcel {
     // Clear Row Records.
     private void clearRowRecords(XSSFSheet sheet) {
         for (int i = 0; i < 10; i++) {
-           clearCell(sheet, i + 5, 0); //ordinalNumber1_cell
-           clearCell(sheet, i + 5, 1); //name1_cell
-           clearCell(sheet, i + 5, 5); //startRowData
-           clearCell(sheet, i + 5, 10);
-           clearCell(sheet, i + 5, 11); //inventoryNumber2_cell
-           clearCell(sheet, i + 5, 15);
+           clearCell(sheet, i + 5, ordinalNumber1_cell);
+           clearCell(sheet, i + 5, name1_cell); 
+           clearCell(sheet, i + 5, inventoryNumber1_cell);
+
+           clearCell(sheet, i + 5, ordinalNumber2_cell);
+           clearCell(sheet, i + 5, name2_cell);
+           clearCell(sheet, i + 5, inventoryNumber2_cell);
         }
     }
    
@@ -113,56 +114,59 @@ public class FillingExcel {
    void extractEmployeeToExcelTable(XSSFSheet sheet, String department, String inventory_number, String fio, String name) {
         index++; 
         
+        if (index >= 20) {
+            System.out.println(20);
+        }
+                        
         // Если это первая позиция с оборудованием для очередного сотрудника
-        if (index == 1) {            
+        if (index > countRecordsForFio) {
             writeCellValue(sheet, formatForDateNow.format(dateNow), date_row, date_cell);
             writeCellValue(sheet,  fio,  fio_row, fio_cell);
 
             currentFioEmplyee = fio;
-            countRecordsForFio = ptrDataBase.getCountRecordsForFio(currentFioEmplyee);
+            countRecordsForFio = ptrDataBase.getCountRecordsForFio(currentFioEmplyee);            
+            indexFile = 1;
+            index = 1;
         }
 
         // Если позиций от 1 до 20
 
-        if (currentFioEmplyee == fio) {
-            if (index < 10) {
+        if (currentFioEmplyee.equals(fio)) {
+            if (index <= 10) {
                 writeCellValue(sheet,  index, row, ordinalNumber1_cell);
                 writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name1_cell);
                 writeCellValue(sheet,  inventory_number,  row, inventoryNumber1_cell);
-            }else {
-                row = startRowData;     
+            }else {  
                 writeCellValue(sheet,  index, row, ordinalNumber2_cell);
                 writeCellValue(sheet,  name.length() > 60?name.substring(0, 60):name, row, name2_cell);
                 writeCellValue(sheet,  inventory_number,  row, inventoryNumber2_cell);
-            }
-            row++;            
+            }            
+            row++;
+            if (index == 10) row = startRowData;            
         }
-        
-        // String create_filename_destination;
-        // create_filename_destination = fio + ".xlsx";
-        // ptrExcelFile.writeWorkbook(ptrExcelFile.getWorkbookDestination(), create_filename_destination);           
-
-        // if ((index % 20) == 0) {
-        //     String create_filename_destination;
+      
+        if ((index % 20) == 0) {
+            String create_filename_destination;
            
-        //     if (countRecordsForFio <= 20) create_filename_destination = fio + ".xlsx";
-        //     else create_filename_destination = fio + " " + indexFile + ".xlsx";
+            if (countRecordsForFio <= 20) create_filename_destination = fio + ".xlsx";
+            else create_filename_destination = fio + " " + indexFile + ".xlsx";
            
-        //     ptrExcelFile.writeWorkbook(ptrExcelFile.getWorkbookDestination(), create_filename_destination);           
-        //     indexFile++;
-        //     last_table = true;           
-        //     index = 0;
-        //     clearRowRecords(sheet);
-        // } 
+            ptrExcelFile.writeWorkbook(ptrExcelFile.getWorkbookDestination(), create_filename_destination);           
+            indexFile++;
+            last_table = true;                       
+            row = startRowData;            
+            clearRowRecords(sheet);
+        } 
               
-        // if (index == countRecordsForFio && countRecordsForFio % 20 != 0) {
-        //     String create_filename_destination;
+        if (index == countRecordsForFio && countRecordsForFio % 20 != 0) {
+            String create_filename_destination;
 
-        //     if (last_table == true) create_filename_destination = fio + " " + indexFile + ".xlsx";
-        //     else create_filename_destination = fio + ".xlsx";
+            if (last_table == true) create_filename_destination = fio + " " + indexFile + ".xlsx";
+            else create_filename_destination = fio + ".xlsx";
 
-        //     ptrExcelFile.writeWorkbook(ptrExcelFile.getWorkbookDestination(), create_filename_destination);           
-        //     clearRowRecords(sheet);
-        // }
+            ptrExcelFile.writeWorkbook(ptrExcelFile.getWorkbookDestination(), create_filename_destination);            
+            row = startRowData;
+            clearRowRecords(sheet);            
+        }
     } 
 }
