@@ -11,7 +11,7 @@ public class FillingExcel {
    
     private SimpleDateFormat formatForDateNow = new SimpleDateFormat("dd.MM.yyyy");
 
-    private String pathQuery = "src\\sql\\Equipments that belong is IT department.sql";
+    private String pathQuery = "..\\src\\sql\\Equipments that belong is IT department.sql";
     
     private final int date_row = 3;
     private final int date_cell = 2;

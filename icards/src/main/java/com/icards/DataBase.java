@@ -21,7 +21,7 @@ public class DataBase {
     private static final String USER = "root";
     private static final String PASS = "1q2w3e$R";
     
-    private String pathQuery = "src\\sql\\Count equipments that belong employments.sql";
+    private String pathQuery = "..\\src\\sql\\Count equipments that belong employments.sql";
     
     // Opening a database connetction.
     DataBase() {

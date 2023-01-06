@@ -21,8 +21,8 @@ public class FillingDB {
 
     FillingDB(DataBase dataBase, ExcelFile excelFile) {
         //Определить имя листа:
-        //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)
-        XSSFSheet sheet = excelFile.getWorkbookSource().getSheet("TDSheet");        
+        //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)        
+        XSSFSheet sheet = excelFile.getWorkbookSource().getSheet(excelFile.getWorkbookSource().getSheetName(0));
 
         
 
