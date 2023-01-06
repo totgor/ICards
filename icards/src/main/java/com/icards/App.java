@@ -12,29 +12,27 @@ public class App
         }        
         
         String filename_source = args[0];
-        String filename_destination = args[1];
-        
-        // For the test without compiling.
-        // String filename_source = "excel_data.xlsx";        
-        // String filename_destination = "excel_template.xlsx";        
+        String filename_destination = args[1];        
         
         DataBase dataBase = new DataBase(); // Opening a database connetction.
         ExcelFile excelFile = new ExcelFile(filename_source, filename_destination); // Opening excel files.
 
 
-        //Импортируем данные из excel в БД
+        // Uploading data to a database.
+        System.out.println("Uploading data to a database:");
         Date start_time = new Date();
-        FillingDB fillingDB = new FillingDB(dataBase, excelFile); // Filling Database from excel file.
+        FillingDB fillingDB = new FillingDB(dataBase, excelFile);
         Date stop_time = new Date();
         long time = stop_time.getTime() - start_time.getTime();
-        System.out.println( " Выполненно за " + time/1000.0 + " сек.");
+        System.out.println( "\nCompleted in " + time/1000.0 + " sec.");
 
-        //Создаем файлы инвентарные карточки на каждого сотрудника в виде excel файлы.
+        //Creating Excel files and sorting into directories.
+        System.out.println("Creating Excel files and sorting into directories:");
         start_time = new Date();
         FillingExcel fillingExcel = new FillingExcel(dataBase, excelFile);
         stop_time = new Date();
         time = stop_time.getTime() - start_time.getTime();
-        System.out.println( " Выполненно за " + time/1000.0 + " сек.");
+        System.out.println( "\nCompleted in " + time/1000.0 + " sec.");
 
         
         dataBase.closeConnection();

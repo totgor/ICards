@@ -20,7 +20,7 @@ public class FillingDB {
     private final int fio_cell = 6;
 
     FillingDB(DataBase dataBase, ExcelFile excelFile) {
-        //Определить имя листа:
+        // Find out the name of the sheet.
         //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)        
         XSSFSheet sheet = excelFile.getWorkbookSource().getSheet(excelFile.getWorkbookSource().getSheetName(0));
 
@@ -36,7 +36,7 @@ public class FillingDB {
                 name = row_source.getCell(name_cell).toString();
                 fio = row_source.getCell(fio_cell).toString();
 
-                //обрабоать запрос на добавление строки в БД
+                // Insert a record into the databse table.
                 dataBase.insertQuery(++count, department, inventory_number, name, fio);
                 System.out.print("\r" + count);
             }

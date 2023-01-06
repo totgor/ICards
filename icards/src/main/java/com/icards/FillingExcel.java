@@ -42,8 +42,7 @@ public class FillingExcel {
         
         String QUERY = dataBase.readQueryFromFile(pathQuery);
         XSSFSheet sheet = excelFile.getWorkbookDestination().getSheet("Лист1");
-        
-        // Инициализация
+                
         index = 0;
         indexFile = 1;        
         row = startRowData;         

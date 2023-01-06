@@ -25,16 +25,18 @@ public class ExcelFile {
     ExcelFile(String filename_source, String filename_destination) {
 
         workbook_source = readWorkbook(filename_source);
+        System.out.println("Open source excel file ...OK     ");    
 
         if (workbook_source == null) {
-            System.out.println("Source excel file does not exist."); 
+            System.out.println("Source excel file does not exist ...ERROR"); 
             return;
         }
 
         workbook_destination = readWorkbook(filename_destination);
 
+        System.out.println("Open destination excel file ...OK");
         if (workbook_destination == null) {
-            System.out.println("Destination excel file does not exist."); 
+            System.out.println("Destination excel file does not exist ...ERROR"); 
             return;
         }        
                 
@@ -46,7 +48,7 @@ public class ExcelFile {
             XSSFWorkbook workbook = new XSSFWorkbook(fileSystem);
             return workbook;
         } catch (IOException e) {
-            System.out.println("Error opening an excel file.");
+            System.out.println("Error opening an excel file ...ERROR");
             return null;
         }
     }
@@ -61,7 +63,7 @@ public class ExcelFile {
             workbook.write(fileOutputStream);
             
         } catch (Exception e) {
-            System.out.println("Error saving changes to excel file.");
+            System.out.println("Error saving changes to excel file ...ERROR");
         }        
     }
 
@@ -72,7 +74,7 @@ public class ExcelFile {
                 workbook_source.close();
                 System.out.println("Close source excel file ...OK");   
             } catch (IOException e) {
-                System.out.println("Close source excel file ...NO");
+                System.out.println("Close source excel file ...ERROR");
             }
         }
 
@@ -81,7 +83,7 @@ public class ExcelFile {
                 workbook_destination.close();
                 System.out.println("Close destination excel file ...OK");   
             } catch (Exception e) {
-                System.out.println("Close destination excel file ...NO");
+                System.out.println("Close destination excel file ...ERROR");
             }
         }
     }
