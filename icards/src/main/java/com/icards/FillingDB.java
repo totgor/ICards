@@ -1,6 +1,6 @@
 package com.icards;
 
-import java.util.Date;
+
 import java.util.Iterator;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFRow;
@@ -24,7 +24,7 @@ public class FillingDB {
         //=ПСТР(ЯЧЕЙКА("имяфайла";A1);ПОИСК("]";ЯЧЕЙКА("имяфайла";A1))+1;255)
         XSSFSheet sheet = excelFile.getWorkbookSource().getSheet("TDSheet");        
 
-        Date start_time = new Date();
+        
 
         Iterator rowIterator = sheet.rowIterator();
         while (rowIterator.hasNext()){
@@ -38,13 +38,10 @@ public class FillingDB {
 
                 //обрабоать запрос на добавление строки в БД
                 dataBase.insertQuery(++count, department, inventory_number, name, fio);
-
                 System.out.print("\r" + count);
             }
         }
 
-        Date stop_time = new Date();
-        long time = stop_time.getTime() - start_time.getTime();
-        System.out.println( " Выполненно за " + time/1000.0 + " сек.");
+
     }
 }

@@ -1,5 +1,7 @@
 package com.icards;
 
+import java.util.Date;
+
 public class App 
 {  
     public static void main( String[] args )
@@ -18,8 +20,21 @@ public class App
         
         DataBase dataBase = new DataBase(); // Opening a database connetction.
         ExcelFile excelFile = new ExcelFile(filename_source, filename_destination); // Opening excel files.
-        //FillingDB fillingDB = new FillingDB(dataBase, excelFile); // Filling Database from excel file.
+
+
+        //Импортируем данные из excel в БД
+        // Date start_time = new Date();
+        // FillingDB fillingDB = new FillingDB(dataBase, excelFile); // Filling Database from excel file.
+        // Date stop_time = new Date();
+        // long time = stop_time.getTime() - start_time.getTime();
+        // System.out.println( " Выполненно за " + time/1000.0 + " сек.");
+
+        //Создаем файлы инвентарные карточки на каждого сотрудника в виде excel файлы.
+        Date start_time = new Date();
         FillingExcel fillingExcel = new FillingExcel(dataBase, excelFile);
+        Date stop_time = new Date();
+        long time = stop_time.getTime() - start_time.getTime();
+        System.out.println( " Выполненно за " + time/1000.0 + " сек.");
 
         
         dataBase.closeConnection();

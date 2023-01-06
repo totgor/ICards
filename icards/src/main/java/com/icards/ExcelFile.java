@@ -1,8 +1,10 @@
 package com.icards;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 // Work with Excel file.
@@ -52,11 +54,15 @@ public class ExcelFile {
     // Save the changes to the new Excel file.
     void writeWorkbook(XSSFWorkbook workbook, String filename) {
         try {
-            FileOutputStream fileOutputStream = new FileOutputStream(filename);
+            File file = new File(filename);
+            file.getParentFile().mkdirs();
+            file.createNewFile();
+            FileOutputStream fileOutputStream = new FileOutputStream(filename);            
             workbook.write(fileOutputStream);
+            
         } catch (Exception e) {
             System.out.println("Error saving changes to excel file.");
-        }
+        }        
     }
 
     // Closing excel files.
