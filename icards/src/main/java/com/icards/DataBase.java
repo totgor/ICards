@@ -72,9 +72,9 @@ public class DataBase {
     }
 
     // Insert data into the database.
-    void insertQuery(int id, String department, String inventory_number, String name, String fio) {
-        String QUERY = "INSERT INTO equipments(id, department, inventory_number, name, fio) " +
-                       "VALUES ('" + id + "', '" + department + "', '" + inventory_number + "', '" + name + "', '" + fio + "')";        
+    void insertQuery(int id, String department, String inventory_number, String name, String fio, String upgrade, String device) {
+        String QUERY = "INSERT INTO equipments(id, department, inventory_number, name, fio, upgrade, device) " +
+                       "VALUES ('" + id + "', '" + department + "', '" + inventory_number + "', '" + name + "', '" + fio + "', '" + upgrade + "', '" + device + "')";        
 
         if (connection != null & statement1 != null) {            
             try {

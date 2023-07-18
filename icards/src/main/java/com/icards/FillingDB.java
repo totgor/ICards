@@ -13,11 +13,15 @@ public class FillingDB {
     private String inventory_number = null;
     private String name = null;
     private String fio = null;
+    private String upgrade = null;
+    private String device = null;
     
     private final int department_cell = 0;
     private final int inventory_number_cell = 1;
     private final int name_cell = 4;
     private final int fio_cell = 6;
+    private final int upgrade_cell = 9;
+    private final int device_cell = 10;
 
     FillingDB(DataBase dataBase, ExcelFile excelFile) {
         // Find out the name of the sheet.
@@ -35,9 +39,20 @@ public class FillingDB {
                 inventory_number = row_source.getCell(inventory_number_cell).toString();
                 name = row_source.getCell(name_cell).toString();
                 fio = row_source.getCell(fio_cell).toString();
+                try {
+                    upgrade = row_source.getCell(upgrade_cell).toString();                                                                                        
+                } catch (NullPointerException e) {
+                    // upgrade = "NULL";
+                }
+                try {
+                    device = row_source.getCell(device_cell).toString();
+                } catch (NullPointerException e) {
+                    // device = "NULL";
+                }
+                                           
 
                 // Insert a record into the databse table.
-                dataBase.insertQuery(++count, department, inventory_number, name, fio);
+                dataBase.insertQuery(++count, department, inventory_number, name, fio, upgrade, device);
                 System.out.print("\r" + count);
             }
         }
