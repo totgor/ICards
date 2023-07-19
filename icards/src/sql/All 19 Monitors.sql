@@ -1,13 +1,12 @@
--- 19 мониторы на складе
+-- все 19 мониторы 
 
-DROP TEMPORARY TABLE IF EXISTS store_monitors;
+DROP TEMPORARY TABLE IF EXISTS all_monitors;
 
-CREATE TEMPORARY TABLE store_monitors
+CREATE TEMPORARY TABLE all_monitors
 SELECT department, inventory_number, name, fio, upgrade, device
 FROM icardsdb.equipments
-WHERE    
-        fio LIKE '%фомичев%евгений%'
-         AND name LIKE '%монитор%' 
+WHERE            
+         name LIKE '%монитор%' 
          AND name NOT LIKE '%23,8%'
          AND name NOT LIKE '%23.8%'
          AND name NOT LIKE '%23.6%'
@@ -28,4 +27,7 @@ WHERE
          AND name NOT LIKE '%сенсор%'
          AND name NOT LIKE '%225%';
 
-SELECT * FROM store_monitors ORDER BY fio;
+
+SELECT * FROM all_monitors ORDER BY fio;
+
+SELECT * FROM icardsdb.equipments WHERE device = 'монитор';

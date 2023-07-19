@@ -1,6 +1,5 @@
 -- 19 мониторы у пользователей
-
-DROP TEMPORARY TABLE user_monitors IF NOT EXISTS(user_monitors);
+DROP TEMPORARY TABLE IF EXISTS user_monitors;
 
 CREATE TEMPORARY TABLE user_monitors
 SELECT department, inventory_number, name, fio, upgrade, device
@@ -22,6 +21,10 @@ WHERE
          AND name NOT LIKE '%74,5"%'
          AND name NOT LIKE '%VG24%'
          AND name NOT LIKE '%S24%'
-         AND name NOT LIKE '%кронштейн%';
+         AND name NOT LIKE '%кронштейн%'
+         AND name NOT LIKE '%S23A%'
+         AND name NOT LIKE '%34"%'
+         AND name NOT LIKE '%сенсор%'
+         AND name NOT LIKE '%225%';
 
 SELECT * FROM user_monitors ORDER BY fio;

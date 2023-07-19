@@ -1,5 +1,6 @@
 -- ПК не в этапах
-DROP TEMPORARY TABLE pc_not_upgrade;
+
+DROP TEMPORARY TABLE IF EXISTS pc_not_upgrade;
 
 CREATE TEMPORARY TABLE pc_not_upgrade
 SELECT * FROM icardsdb.equipments WHERE

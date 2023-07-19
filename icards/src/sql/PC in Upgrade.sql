@@ -1,5 +1,6 @@
 -- ПК в этапах
-DROP TEMPORARY TABLE pc_upgrade;
+DROP TEMPORARY TABLE IF EXISTS pc_upgrade;
+
 
 CREATE TEMPORARY TABLE pc_upgrade
 SELECT * FROM icardsdb.equipments WHERE
